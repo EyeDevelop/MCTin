@@ -2,7 +2,7 @@
     "name": "Example Pack",
     "version": "1.0.0",
     "description": "The example modpack.",
-    "enabled": "yes",
+    "enabled": "no",
 
     "mc_version": "1.7.10",
     "mc_jar": "forge.jar",
@@ -14,7 +14,7 @@
             "description": "Example Mod.",
             "version": "1.0",
             "link": "example_mod-1.0.jar",
-            "enabled": "no"
+            "enabled": "yes"
         },
         "remote_exmod": {
             "name": "Example Remote Mod",
