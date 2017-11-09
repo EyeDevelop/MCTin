@@ -1,0 +1,10 @@
+{
+    "name": "ModPackName",
+    "version": "ModPackVersion",
+    "description": "ModPackDescription",
+
+    "mc_version": "IntendedMCVersion",
+    "mc_jar": "PathToBaseJar",
+
+    "mods": []
+}
