@@ -1,0 +1,28 @@
+{
+    "name": "Example Pack",
+    "version": "1.0.0",
+    "description": "The example modpack.",
+    "enabled": "yes",
+
+    "mc_version": "1.7.10",
+    "mc_jar": "forge.jar",
+
+    "mods": {
+        "local_exmod": {
+            "name": "Example Local Mod",
+            "author": "Example Author",
+            "description": "Example Mod.",
+            "version": "1.0",
+            "link": "example_mod-1.0.jar",
+            "enabled": "no"
+        },
+        "remote_exmod": {
+            "name": "Example Remote Mod",
+            "author": "Example Author",
+            "description": "Example Mod.",
+            "version": "1.0",
+            "link": "remote:https://example.com/mods/example_mod-1.0.jar",
+            "enabled": "yes"
+        }
+    }
+}

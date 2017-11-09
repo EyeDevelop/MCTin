@@ -16,8 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from RepoManagement import views as repo_views
+from APIHandler import views as api_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^api', api_views.handle, name="api"),
+    url(r'^modpacks/(.*)', api_views.serve, name="servemod"),
     url(r'^', repo_views.index, name="index"),
 ]
