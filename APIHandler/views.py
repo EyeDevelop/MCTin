@@ -58,10 +58,10 @@ def get_mod(mod_name, modpack_name):
     return mod
 
 
-def check_extension(dependency_name, mod_name, modpack_name):
+def check_extension(extension_name, mod_name, modpack_name):
     mod = get_mod(mod_name, modpack_name)
 
-    if dependency_name not in mod["dependencies"].keys():
+    if extension_name not in mod["extensions"].keys():
         return False
 
     return True
