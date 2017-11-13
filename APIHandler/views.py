@@ -67,13 +67,13 @@ def check_extension(extension_name, mod_name, modpack_name):
     return True
 
 
-def get_extension(dependency_name, mod_name, modpack_name):
-    if not check_extension(dependency_name, mod_name, modpack_name):
+def get_extension(extension_name, mod_name, modpack_name):
+    if not check_extension(extension_name, mod_name, modpack_name):
         return None
 
     mod = get_mod(mod_name, modpack_name)
 
-    return mod["dependencies"][dependency_name]
+    return mod["extensions"][extension_name]
 
 
 # Create your views here.
