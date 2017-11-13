@@ -133,12 +133,27 @@ def handle(request):
                 else:
                     return redirect("/modpacks/{}/mods/{}".format(modpack_name, extension["link"]))
 
+            elif "getextchecksum" in request.GET.keys():
+                extension = get_extension(request.GET.get("getextchecksum"), mod_name, modpack_name)
+
+                if not extension:
+                    return EXTENSION_NOT_FOUND
+
+                if "remote:" in extension["link"]:
+                    return CHECKSUM_NOT_POSSIBLE
+
+                h_sha256 = hashlib.sha256()
+                with open(os.path.join(BASE_DIR, "data/modpacks/{}/mods/{}".format(modpack_name, extension["link"])), 'rb') as m_fp:
+                    h_sha256.update(m_fp.read())
+
+                return JsonResponse({"checksum": h_sha256.hexdigest()}, json_dumps_params={"indent": 4})
+
             elif "getchecksum" in request.GET.keys():
                 if "remote:" in mod["link"]:
                     return CHECKSUM_NOT_POSSIBLE
 
                 h_sha256 = hashlib.sha256()
-                with open(os.path.join(BASE_DIR, "data/modpacks/{}/mods/{}".format(request.GET.get("modpack"), mod["link"])), 'rb') as m_fp:
+                with open(os.path.join(BASE_DIR, "data/modpacks/{}/mods/{}".format(modpack_name, mod["link"])), 'rb') as m_fp:
                     h_sha256.update(m_fp.read())
 
                 return JsonResponse({"checksum": h_sha256.hexdigest()}, json_dumps_params={"indent": 4})
