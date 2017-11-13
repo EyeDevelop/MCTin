@@ -5,7 +5,7 @@
     "enabled": "no",
 
     "mc_version": "1.7.10",
-    "mc_jar": "forge.jar",
+    "forge_installer": "forge.jar",
 
     "mods": {
         "local_exmod": {
