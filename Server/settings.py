@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'RepoManagement.apps.RepomanagementConfig',
+    'APIHandler.apps.ApihandlerConfig'
 ]
 
 MIDDLEWARE = [
