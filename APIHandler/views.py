@@ -16,6 +16,7 @@ MODPACK_NOT_FOUND = JsonResponse({"error": "404", "message": "Modpack not found!
 MODPACK_JAR_NOT_FOUND = JsonResponse({"error": "404", "message": "Requested installed is not available!"}, json_dumps_params={"indent": 4})
 MOD_NOT_ENABLED = JsonResponse({"error": "403", "message": "Mod is not enabled!"}, json_dumps_params={"indent": 4})
 MOD_NOT_FOUND = JsonResponse({"error": "404", "message": "Mod not found!"}, json_dumps_params={"indent": 4})
+EXTENSION_NOT_FOUND = JsonResponse({"error": "404", "message": "Selected extension not found!"}, json_dumps_params={"indent": 4})
 CHECKSUM_NOT_POSSIBLE = JsonResponse({"error": "501", "message": "Cannot calculate checksum on remote mods."}, json_dumps_params={"indent": 4})
 
 # endregion
@@ -57,6 +58,24 @@ def get_mod(mod_name, modpack_name):
     return mod
 
 
+def check_extension(dependency_name, mod_name, modpack_name):
+    mod = get_mod(mod_name, modpack_name)
+
+    if dependency_name not in mod["dependencies"].keys():
+        return False
+
+    return True
+
+
+def get_extension(dependency_name, mod_name, modpack_name):
+    if not check_extension(dependency_name, mod_name, modpack_name):
+        return None
+
+    mod = get_mod(mod_name, modpack_name)
+
+    return mod["dependencies"][dependency_name]
+
+
 # Create your views here.
 def handle(request):
     if "getmodpacks" in request.GET.keys():
@@ -75,6 +94,8 @@ def handle(request):
 
     elif "modpack" in request.GET.keys():
         modpack = get_modpack(request.GET.get("modpack"))
+        modpack_name = request.GET.get("modpack")
+
         if not modpack:
             return MODPACK_NOT_FOUND
 
@@ -85,37 +106,45 @@ def handle(request):
             enabled_mods = {x: modpack["mods"][x] for x in modpack["mods"] if modpack["mods"][x]["enabled"] == "yes"}
             return JsonResponse(enabled_mods, json_dumps_params={"indent": 4})
 
-        elif "getmod" in request.GET.keys():
-            mod = get_mod(request.GET.get("getmod"), request.GET.get("modpack"))
-            if not mod:
-                return MOD_NOT_FOUND
+        elif "mod" in request.GET.keys():
+            mod = get_mod(request.GET.get("mod"), modpack_name)
+            mod_name = request.GET.get("mod")
 
-            return JsonResponse(mod, json_dumps_params={"indent": 4})
-
-        elif "downloadmod" in request.GET.keys():
-            mod = get_mod(request.GET.get("downloadmod"), request.GET.get("modpack"))
             if not mod:
                 return MOD_NOT_FOUND
 
             if mod["enabled"] != "yes":
                 return MOD_NOT_ENABLED
 
-            if "remote:" in mod["link"]:
-                return redirect(mod["link"][7:])
+            if "download" in request.GET.keys():
+                if "remote:" in mod["link"]:
+                    return redirect(mod["link"][7:])
+                else:
+                    return redirect("/modpacks/{}/mods/{}".format(modpack_name, mod["link"]))
+
+            elif "downloadext" in request.GET.keys():
+                extension = get_extension(request.GET.get("downloadext"), mod_name, modpack_name)
+
+                if not extension:
+                    return EXTENSION_NOT_FOUND
+
+                if "remote:" in extension["link"]:
+                    return redirect(extension["link"][7:])
+                else:
+                    return redirect("/modpacks/{}/mods/{}".format(modpack_name, extension["link"]))
+
+            elif "getchecksum" in request.GET.keys():
+                if "remote:" in mod["link"]:
+                    return CHECKSUM_NOT_POSSIBLE
+
+                h_sha256 = hashlib.sha256()
+                with open(os.path.join(BASE_DIR, "data/modpacks/{}/mods/{}".format(request.GET.get("modpack"), mod["link"])), 'rb') as m_fp:
+                    h_sha256.update(m_fp.read())
+
+                return JsonResponse({"checksum": h_sha256.hexdigest()}, json_dumps_params={"indent": 4})
+
             else:
-                return redirect("/modpacks/{}/mods/{}".format(request.GET.get("modpack"), mod["link"]))
-
-        elif "getchecksum" in request.GET.keys():
-            mod = get_mod(request.GET.get("getchecksum"), request.GET.get("modpack"))
-
-            if "remote:" in mod["link"]:
-                return CHECKSUM_NOT_POSSIBLE
-
-            h_sha256 = hashlib.sha256()
-            with open(os.path.join(BASE_DIR, "data/modpacks/{}/mods/{}".format(request.GET.get("modpack"), mod["link"])), 'rb') as m_fp:
-                h_sha256.update(m_fp.read())
-
-            return JsonResponse({"checksum": h_sha256.hexdigest()}, json_dumps_params={"indent": 4})
+                return JsonResponse(mod, json_dumps_params={"indent": 4})
 
         elif "getinstaller" in request.GET.keys():
             if not os.path.exists(os.path.join(BASE_DIR, "data/modpacks/{}/{}.{}".format(request.GET.get("modpack"), modpack["forge_installer"], request.GET.get("getinstaller")))):

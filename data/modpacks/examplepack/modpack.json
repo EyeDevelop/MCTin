@@ -14,7 +14,13 @@
             "description": "Example Mod.",
             "version": "1.0",
             "link": "example_mod-1.0.jar",
-            "enabled": "yes"
+            "enabled": "yes",
+            "extensions": {
+                "dep1": {
+                    "name": "Dependency 1",
+                    "link": "dep1.jar"
+                }
+            }
         },
         "remote_exmod": {
             "name": "Example Remote Mod",
@@ -22,7 +28,8 @@
             "description": "Example Mod.",
             "version": "1.0",
             "link": "remote:https://example.com/mods/example_mod-1.0.jar",
-            "enabled": "yes"
+            "enabled": "yes",
+            "extensions": {}
         }
     }
 }
