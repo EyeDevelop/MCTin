@@ -1,0 +1,35 @@
+{
+    "name": "Example Pack",
+    "version": "1.0.0",
+    "description": "The example modpack.",
+    "enabled": "no",
+
+    "mc_version": "1.7.10",
+    "forge_installer": "forge.jar",
+
+    "mods": {
+        "local_exmod": {
+            "name": "Example Local Mod",
+            "author": "Example Author",
+            "description": "Example Mod.",
+            "version": "1.0",
+            "link": "example_mod-1.0.jar",
+            "enabled": "yes",
+            "extensions": {
+                "dep1": {
+                    "name": "Dependency 1",
+                    "link": "dep1.jar"
+                }
+            }
+        },
+        "remote_exmod": {
+            "name": "Example Remote Mod",
+            "author": "Example Author",
+            "description": "Example Mod.",
+            "version": "1.0",
+            "link": "remote:https://example.com/mods/example_mod-1.0.jar",
+            "enabled": "yes",
+            "extensions": {}
+        }
+    }
+}
