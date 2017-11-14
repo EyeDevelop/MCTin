@@ -18,7 +18,8 @@
             "extensions": {
                 "dep1": {
                     "name": "Dependency 1",
-                    "link": "dep1.jar"
+                    "link": "dep1.jar",
+                    "customname": "TheMostAmazingDependency.jar"
                 }
             }
         },
